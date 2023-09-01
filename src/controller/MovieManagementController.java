@@ -46,7 +46,7 @@ public class MovieManagementController {
                 String language = rs.getString("language");
                 String productionStudio = rs.getString("production_studio");
                 int yearLaunch = rs.getInt("year_launch");
-                int duration = rs.getInt("duration");
+                String duration = rs.getString("duration");
 
                 Movie movie = new Movie(title, director, genre, language, productionStudio, yearLaunch, duration);
                 movies.add(movie);
@@ -74,7 +74,7 @@ public class MovieManagementController {
                 String language = rs.getString("language");
                 String productionStudio = rs.getString("production_studio");
                 int yearLaunch = rs.getInt("year_launch");
-                int duration = rs.getInt("duration");
+                String duration = rs.getString("duration");
 
                 Movie movie = new Movie(title, director, genre, language, productionStudio, yearLaunch, duration);
 
@@ -101,7 +101,7 @@ public class MovieManagementController {
             ps.setString(4, movie.getLanguage());
             ps.setString(5, movie.getProductionStudio());
             ps.setInt(6, movie.getYearLaunch());
-            ps.setInt(7, movie.getDuration());
+            ps.setString(7, movie.getDuration());
 
             ps.execute();
 
@@ -121,7 +121,7 @@ public class MovieManagementController {
         try {
             PreparedStatement ps;
 
-            String query = "UPDATE movies SET  director = ?, genre = ?, language = ?, production_studio = ?, year_lunch = ?, duration = ? WHERE title = ?";
+            String query = "UPDATE movies SET  director = ?, genre = ?, language = ?, production_studio = ?, year_launch = ?, duration = ? WHERE title = ?";
 
             ps = con.prepareStatement(query);
 
@@ -130,7 +130,7 @@ public class MovieManagementController {
             ps.setString(3, movie.getLanguage());
             ps.setString(4, movie.getProductionStudio());
             ps.setInt(5, movie.getYearLaunch());
-            ps.setInt(6, movie.getDuration());
+            ps.setString(6, movie.getDuration());
             ps.setString(7, movie.getTitle());
 
             int rowsUpdated = ps.executeUpdate();

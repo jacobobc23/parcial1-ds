@@ -12,10 +12,10 @@ public class Movie {
     private String language;
     private String productionStudio;
     private int yearLaunch;
-    private int duration;
+    private String duration;
 
     public Movie(String title, String director, String genre, String language, String productionStudio,
-            int yearLaunch, int duration) {
+            int yearLaunch, String duration) {
         this.title = title;
         this.director = director;
         this.genre = genre;
@@ -73,11 +73,11 @@ public class Movie {
         this.yearLaunch = yearLaunch;
     }
 
-    public int getDuration() {
+    public String getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(String duration) {
         this.duration = duration;
     }
     
