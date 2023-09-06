@@ -1,7 +1,6 @@
 package view;
 
 import controller.MovieManagementController;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
