@@ -12,7 +12,7 @@ import org.mariadb.jdbc.Connection;
  */
 public class BDConnection {
 
-    private final String base = "bd_parcial";
+    private final String base = "bd_parcial1";
     private final String user = "root";
     private final String password = "";
 
