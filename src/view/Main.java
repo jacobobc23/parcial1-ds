@@ -1,6 +1,6 @@
 package view;
 
-import controller.MovieManagementController;
+import controller.MoviesController;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -10,11 +10,11 @@ import model.Movie;
 
 /**
  *
- * @author Jacobo-bc
+ * @author jacobobc
  */
 public class Main extends javax.swing.JFrame {
 
-    private final MovieManagementController controller;
+    private final MoviesController controller;
 
     /**
      * Creates new form Main
@@ -23,8 +23,8 @@ public class Main extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         setTitle("Inicio");
-        controller = new MovieManagementController();
-        fillTable();
+        controller = new MoviesController();
+        fillMoviesTable();
         setCbxYearLaunch();
     }
 
@@ -309,7 +309,7 @@ public class Main extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnShowAllMoviesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowAllMoviesActionPerformed
-        fillTable();
+        fillMoviesTable();
         cleanFields();
     }//GEN-LAST:event_btnShowAllMoviesActionPerformed
 
@@ -331,7 +331,7 @@ public class Main extends javax.swing.JFrame {
             "Título", "Director", "Género", "Lenguaje", "Estudio producción", "Año lanzamiento", "Duración"
         });
         moviesTable.setModel(model);
-        Movie movie = controller.searchMovie(title);
+        Movie movie = controller.selectMovie(title);
         if (movie != null) {
             model.addRow(new Object[]{
                 movie.getTitle(),
@@ -353,20 +353,20 @@ public class Main extends javax.swing.JFrame {
 
         } else {
             JOptionPane.showMessageDialog(null, "Pelicula no encontrada");
-            fillTable();
+            fillMoviesTable();
         }
     }//GEN-LAST:event_btnSearchMovieActionPerformed
 
     private void moviesTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_moviesTableMouseClicked
-        int seleccion = moviesTable.getSelectedRow();
+        int selected = moviesTable.getSelectedRow();
 
-        txtTitle.setText(moviesTable.getValueAt(seleccion, 0).toString());
-        txtDirector.setText(moviesTable.getValueAt(seleccion, 1).toString());
-        cbxGenre.setSelectedItem((moviesTable.getValueAt(seleccion, 2)).toString());
-        cbxLanguage.setSelectedItem(moviesTable.getValueAt(seleccion, 3).toString());
-        txtProductionStudio.setText(moviesTable.getValueAt(seleccion, 4).toString());
-        cbxYearLaunch.setSelectedItem(moviesTable.getValueAt(seleccion, 5).toString());
-        txtDuration.setText(moviesTable.getValueAt(seleccion, 6).toString());
+        txtTitle.setText(moviesTable.getValueAt(selected, 0).toString());
+        txtDirector.setText(moviesTable.getValueAt(selected, 1).toString());
+        cbxGenre.setSelectedItem((moviesTable.getValueAt(selected, 2)).toString());
+        cbxLanguage.setSelectedItem(moviesTable.getValueAt(selected, 3).toString());
+        txtProductionStudio.setText(moviesTable.getValueAt(selected, 4).toString());
+        cbxYearLaunch.setSelectedItem(moviesTable.getValueAt(selected, 5).toString());
+        txtDuration.setText(moviesTable.getValueAt(selected, 6).toString());
 
     }//GEN-LAST:event_moviesTableMouseClicked
 
@@ -386,9 +386,9 @@ public class Main extends javax.swing.JFrame {
 
         try {
             Movie movie = new Movie(title, director, genre, language, productionStudio, yearLaunch, duration);
-            controller.addMovie(movie);
+            controller.insertMovie(movie);
             JOptionPane.showMessageDialog(null, "Pelicula registrada correctamente");
-            fillTable();
+            fillMoviesTable();
             cleanFields();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Error al registrar la pelicula");
@@ -413,7 +413,7 @@ public class Main extends javax.swing.JFrame {
         boolean success = controller.updateMovie(movie);
 
         if (success) {
-            fillTable();
+            fillMoviesTable();
             cleanFields();
             JOptionPane.showMessageDialog(null, "Pelicula editada correctamente");
         } else {
@@ -427,7 +427,7 @@ public class Main extends javax.swing.JFrame {
         boolean success = controller.deleteMovie(title);
 
         if (success) {
-            fillTable();
+            fillMoviesTable();
             cleanFields();
             JOptionPane.showMessageDialog(null, "Pelicula eliminada correctamente");
         } else {
@@ -446,10 +446,10 @@ public class Main extends javax.swing.JFrame {
         cbxYearLaunch.setSelectedIndex(0);
     }
 
-    private void fillTable() {
+    private void fillMoviesTable() {
         DefaultTableModel model = new DefaultTableModel();
 
-        ArrayList<Movie> movies = controller.listMovies();
+        ArrayList<Movie> movies = controller.listAllMovies();
         model.setColumnIdentifiers(new Object[]{
             "Título", "Director", "Género", "Lenguaje", "Estudio producción", "Año lanzamiento", "Duración"
         });
@@ -472,12 +472,12 @@ public class Main extends javax.swing.JFrame {
     private void cleanFields() {
         txtTitle.setText("");
         txtDirector.setText("");
-        cbxGenre.setSelectedIndex(0);
-        cbxLanguage.setSelectedIndex(0);
-        cbxYearLaunch.setSelectedIndex(0);
         txtDuration.setText("");
         txtProductionStudio.setText("");
         txtFilter.setText("");
+        cbxLanguage.setSelectedIndex(0);
+        cbxYearLaunch.setSelectedIndex(0);
+        cbxGenre.setSelectedIndex(0);
     }
 
     private void cleanTable() {
@@ -493,35 +493,7 @@ public class Main extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> {
-            new Main().setVisible(true);
-        });
-    }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDesktopPane backgroundPanel;

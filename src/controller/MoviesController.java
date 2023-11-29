@@ -2,7 +2,7 @@ package controller;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import connection.BDConnection;
+import db.DBConnection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import model.Movie;
@@ -10,34 +10,23 @@ import org.mariadb.jdbc.Connection;
 
 /**
  *
- * @author Jacobo-bc
+ * @author jacobobc
  */
-public class MovieManagementController {
+public class MoviesController {
 
-    private final BDConnection conn;
     private final Connection con;
 
-    public MovieManagementController() {
-        conn = new BDConnection();
-        con = conn.getConnection();
+    public MoviesController() {
+        con = DBConnection.getINSTANCE().getConnection();
     }
 
-    /**
-     * Devuelve un arrayList que contiene todas las peliculas de la bd
-     *
-     * @return
-     */
-    public ArrayList<Movie> listMovies() {
+    public ArrayList<Movie> listAllMovies() {
         ArrayList<Movie> movies = new ArrayList<>();
 
-        try {
-            PreparedStatement ps;
-            ResultSet rs;
+        String sql = "SELECT * FROM movies";
 
-            String query = "SELECT * FROM movies";
-
-            ps = con.prepareStatement(query);
-            rs = ps.executeQuery();
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
                 String title = rs.getString("title");
@@ -57,16 +46,12 @@ public class MovieManagementController {
         return movies;
     }
 
-    public Movie searchMovie(String title) {
-        try {
-            PreparedStatement ps;
-            ResultSet rs;
+    public Movie selectMovie(String title) {
+        String sql = "SELECT * FROM movies WHERE title = ?";
 
-            String query = "SELECT * FROM movies WHERE title = ?";
-
-            ps = con.prepareStatement(query);
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, title.toLowerCase().trim());
-            rs = ps.executeQuery();
+            ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
                 String director = rs.getString("director");
@@ -76,9 +61,7 @@ public class MovieManagementController {
                 int yearLaunch = rs.getInt("year_launch");
                 String duration = rs.getString("duration");
 
-                Movie movie = new Movie(title, director, genre, language, productionStudio, yearLaunch, duration);
-
-                return movie;
+                return new Movie(title, director, genre, language, productionStudio, yearLaunch, duration);
             }
         } catch (SQLException ex) {
             System.err.println(ex.toString());
@@ -86,15 +69,11 @@ public class MovieManagementController {
         return null;
     }
 
-    public void addMovie(Movie movie) throws SQLException {
-        try {
-            PreparedStatement ps;
+    public void insertMovie(Movie movie) throws SQLException {
+        String sql = "INSERT INTO movies (title, director, genre, language, production_studio, year_launch, duration)"
+                + " VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-            String query = "INSERT INTO movies (title, director, genre, language, production_studio, year_launch, duration)"
-                    + " VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-            ps = con.prepareStatement(query);
-
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, movie.getTitle());
             ps.setString(2, movie.getDirector());
             ps.setString(3, movie.getGenre());
@@ -111,20 +90,10 @@ public class MovieManagementController {
         }
     }
 
-    /**
-     * Edita los datos de una pelicula.
-     *
-     * @param movie
-     * @return
-     */
     public boolean updateMovie(Movie movie) {
-        try {
-            PreparedStatement ps;
+        String sql = "UPDATE movies SET  director = ?, genre = ?, language = ?, production_studio = ?, year_launch = ?, duration = ? WHERE title = ?";
 
-            String query = "UPDATE movies SET  director = ?, genre = ?, language = ?, production_studio = ?, year_launch = ?, duration = ? WHERE title = ?";
-
-            ps = con.prepareStatement(query);
-
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, movie.getDirector());
             ps.setString(2, movie.getGenre());
             ps.setString(3, movie.getLanguage());
@@ -143,19 +112,10 @@ public class MovieManagementController {
         }
     }
 
-    /**
-     * Elimina un pelicula de la bd
-     *
-     * @param title
-     * @return
-     */
     public boolean deleteMovie(String title) {
-        try {
-            PreparedStatement ps;
+        String sql = "DELETE FROM movies WHERE title = ?";
 
-            String query = "DELETE FROM movies WHERE title = ?";
-
-            ps = con.prepareStatement(query);
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, title);
 
             int rowDeleted = ps.executeUpdate();
@@ -167,25 +127,12 @@ public class MovieManagementController {
         return false;
     }
 
-    /**
-     * Valida si el titulo de una pelicula esta en uso. En caso de que si,
-     * prohibe el registro con este.
-     *
-     * @param title
-     * @return
-     */
     public boolean titleInUse(String title) {
-        try {
-            PreparedStatement ps;
-            ResultSet rs;
+        String sql = "SELECT * FROM movies WHERE title = ?";
 
-            String query = "SELECT * FROM movies WHERE title = ?";
-
-            ps = con.prepareStatement(query);
-
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, title);
-
-            rs = ps.executeQuery();
+            ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
                 return true;

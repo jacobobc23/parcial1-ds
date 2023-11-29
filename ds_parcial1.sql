@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 01-09-2023 a las 16:14:23
--- Versión del servidor: 10.4.27-MariaDB
--- Versión de PHP: 8.2.0
+-- Tiempo de generación: 29-11-2023 a las 04:21:21
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `bd_parcial`
+-- Base de datos: `ds_parcial1`
 --
 
 -- --------------------------------------------------------
@@ -28,24 +28,21 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `movies` (
-  `title` varchar(100) NOT NULL,
-  `director` varchar(100) NOT NULL,
-  `genre` varchar(100) NOT NULL,
-  `language` varchar(100) NOT NULL,
-  `production_studio` varchar(100) NOT NULL,
-  `year_launch` int(11) NOT NULL,
-  `duration` varchar(11) NOT NULL
+  `title` varchar(40) DEFAULT NULL,
+  `director` varchar(100) DEFAULT NULL,
+  `genre` varchar(30) DEFAULT NULL,
+  `language` varchar(40) DEFAULT NULL,
+  `production_studio` varchar(40) DEFAULT NULL,
+  `year_launch` int(11) DEFAULT NULL,
+  `duration` varchar(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Índices para tablas volcadas
+-- Volcado de datos para la tabla `movies`
 --
 
---
--- Indices de la tabla `movies`
---
-ALTER TABLE `movies`
-  ADD PRIMARY KEY (`title`);
+INSERT INTO `movies` (`title`, `director`, `genre`, `language`, `production_studio`, `year_launch`, `duration`) VALUES
+('Prueba', 'Jacobo', 'Acción', 'Español', 'Jacob\'s Studio', 2019, '80:00');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
