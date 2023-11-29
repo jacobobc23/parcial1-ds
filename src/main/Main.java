@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 package main;
 
 /**
@@ -39,23 +38,4 @@ public class Main {
             new view.Main().setVisible(true);
         });
     }
-
 }
-=======
-package main;
-
-/**
- *
- * @author Jacobo-bc
- */
-public class Main {
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        // TODO code application logic here
-    }
-    
-}
->>>>>>> bce687762b05a7e0028313deb5c031cca4d00484
